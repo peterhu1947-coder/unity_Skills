@@ -1,0 +1,25 @@
+强制 Claude 优先使用 Shell 命令或 Python 脚本完成文件处理任务，而不是用自然语言描述步骤。 触发场景：处理文件（读写、转换、过滤、合并、解析）、批量重命名、文本提取、格式转换、 数据清洗、目录遍历、日志分析等任何涉及文件操作的任务。 即使用户没有明确说"用脚本"，只要任务涉及文件处理，也必须使用本 Skill。Shell / Python 优先处理文件
+核心原则
+遇到文件处理任务，必须先写代码，不要只给文字说明。
+优先级顺序：
+
+Shell 单行命令 — 简单过滤、统计、转换首选（awk, sed, grep, find, cut, sort, uniq, xargs）
+Python 脚本 — 逻辑较复杂、需要解析结构化数据（CSV/JSON/XML）、多步骤处理时使用
+两者结合 — Shell 调度 + Python 处理核心逻辑
+
+决策规则
+任务类型优先工具文本过滤 / 搜索grep, awk, sed文件重命名 / 移动Shell + find / renameCSV / JSON 解析Python (csv, json, pandas)批量格式转换Python 脚本日志分析统计Shell pipeline 或 Python目录遍历find 或 Python pathlib
+执行方式
+
+直接使用 bash_tool 运行命令，展示真实输出
+脚本超过 30 行时，写入 /home/claude/ 再执行
+执行前先用 ls / head 确认文件存在和格式
+出错时读取错误信息，自动修正后重试，不要只给文字解释
+
+输出规范
+
+给出命令或脚本（加简短注释）
+运行并展示输出结果
+用 1-2 句话说明结果含义
+
+禁止：不运行代码就直接给出文字步骤说明作为最终答案。
